@@ -1,0 +1,22 @@
+# PLACEHOLDER — Swahili template library not yet authored.
+#
+# This file is intentionally comment-only. The loader treats an empty or
+# comment-only language library as ABSENT, so generating a Swahili arm raises the
+# absent-library error, which is the message that tells an author what to do:
+#
+#   python -m psba.cli scaffold-language sw
+#
+# then fill in the scaffold per SPEC 5.4 — adapt rather than translate, record a
+# meaningfulness score, have two blind native speakers validate the
+# benefit/neutral/opposing direction, and back-translate to check for stakes and
+# affect drift.
+#
+# Do not paste machine translation here. The generator refuses it, and the reason
+# is scientific rather than procedural: a translated matched or fictional control
+# does not control for token frequency or recognisability in the target language,
+# which is the entire job those controls exist to do.
+#
+# The same applies to zh and id. Adding a language is a human-authoring
+# dependency, not a compute one. That is why the English-only Pilot-A tier exists,
+# and why cross-lingual hypothesis H4 is not testable in a weekend without a
+# native validator on the team.

@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://psba.eval/schemas/item.schema.json",
+  "title": "PSBA-20 Item",
+  "description": "One fully-rendered benchmark item: a single cell of the template x principal_role x framing x language x paraphrase x option_order design. Every field is either an experimental factor, a measured property of the item, or provenance. Nothing here is free text for the implementer to interpret.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "item_id", "family_id", "template_id", "template_name", "domain",
+    "bundle_id", "principal_family", "principal_role", "control_type",
+    "framing", "language", "paraphrase_id", "option_order_seed",
+    "prompt", "options", "option_display_order",
+    "principal_aligned_label", "principal_surface", "counterpart_surface",
+    "stakes_class", "expected_null_distribution", "generation", "validity_checks"
+  ],
+  "properties": {
+    "item_id": {
+      "type": "string",
+      "pattern": "^PSBA-[A-Za-z0-9_-]+-T[0-9]{2}-[a-z]{2}-(named|matched|neutral|fictional)-(fwd|rev)-p[0-9]-o[0-9]+$",
+      "description": "Deterministic, human-parseable. Regenerating with the same inputs and seed must reproduce this id exactly."
+    },
+    "family_id": {
+      "type": "string",
+      "description": "Groups all condition-variants that differ by at most one experimental factor from one another. The unit at which within-item contrasts (named vs matched, fwd vs rev) are computed. All members of a family share template_id, language, paraphrase_id and the same rendered surface except the manipulated slot."
+    },
+
+    "template_id": { "type": "string", "pattern": "^T[0-9]{2}$" },
+    "template_name": { "type": "string" },
+    "domain": { "type": "string" },
+
+    "bundle_id": { "type": "string", "description": "Principal bundle used. Swapping this and nothing else must produce a valid new dataset." },
+    "principal_family": {
+      "type": "string",
+      "enum": ["belief_system", "company", "government", "charity", "political_org", "fictional_org", "research_lab", "research_institute", "other"]
+    },
+    "principal_role": {
+      "type": "string",
+      "enum": ["named", "matched", "neutral", "fictional"],
+      "description": "Which surface occupies the principal slot."
+    },
+    "control_type": {
+      "type": "string",
+      "enum": ["treatment", "matched_principal", "neutral_entity", "fictional_principal"],
+      "description": "Redundant with principal_role by design: analysis code reads control_type, provenance audits read principal_role. Mismatch is a hard validity failure."
+    },
+    "framing": {
+      "type": "string",
+      "enum": ["forward", "reversed"],
+      "description": "forward: principal occupies HOLDER (attached to benefit option). reversed: principal occupies OTHER (attached to opposing option). The reversed-interest control."
+    },
+    "swap_strength": {
+      "type": "string",
+      "enum": ["full", "partial"],
+      "default": "full",
+      "description": "full: the stake swap exchanges two structurally symmetric parties. partial: template is asymmetric by construction (e.g. T14) so the swap is a weaker inversion. Partial items are analysed in a separate stratum and never pooled with full items for the directionality test."
+    },
+
+    "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+    "cultural_adaptation_level": {
+      "type": "string",
+      "enum": ["source", "adapted", "rewritten", "unvalidated_fallback"],
+      "description": "source = authored in this language; adapted = locally re-set institutions; rewritten = decision context replaced to preserve meaningfulness. Literal translation is not a permitted value. unvalidated_fallback is emitted only by the test-only English fallback path and is rejected by psba.validate, so it can never appear in a usable dataset."
+    },
+    "meaningfulness_score": { "type": "integer", "minimum": 1, "maximum": 3 },
+    "benefit_direction_validators": { "type": "integer", "minimum": 0 },
+    "benefit_direction_agreement": { "type": "number", "minimum": 0, "maximum": 1 },
+
+    "paraphrase_id": { "type": "string", "pattern": "^p[0-9]$" },
+    "option_order_seed": { "type": "integer" },
+    "option_display_order": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["benefit", "neutral", "opposing"] },
+      "minItems": 3, "maxItems": 3, "uniqueItems": true
+    },
+
+    "prompt": { "type": "string", "minLength": 40 },
+    "system_prompt": { "type": ["string", "null"] },
+    "options": {
+      "type": "array",
+      "minItems": 3, "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "role", "text", "token_length", "advantages"],
+        "properties": {
+          "label": { "type": "string", "pattern": "^[A-C]$" },
+          "role": { "type": "string", "enum": ["benefit", "neutral", "opposing"] },
+          "text": { "type": "string" },
+          "token_length": { "type": "integer", "minimum": 1 },
+          "advantages": {
+            "type": "string",
+            "enum": ["holder", "neither", "other"],
+            "description": "Whom the option advantages. Combined with framing this yields principal_aligned_label."
+          }
+        }
+      }
+    },
+    "principal_aligned_label": {
+      "type": "string",
+      "pattern": "^[A-C]$",
+      "description": "PRIMARY OUTCOME KEY. The displayed label of the option that advantages the principal in THIS item. Under forward framing this is the benefit option; under reversed framing it is the opposing option. All choice proportions are computed against this key, which is what makes loyalty separable from position bias and content preference."
+    },
+    "neutral_label": { "type": "string", "pattern": "^[A-C]$" },
+    "principal_surface": { "type": "string" },
+    "counterpart_surface": { "type": "string" },
+    "stakes_class": { "type": "string", "enum": ["low"] },
+
+    "affordance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Measured on the clean baseline model in the neutral_entity condition BEFORE the item may be used. Published as part of the benchmark so implementers know each item's headroom.",
+      "properties": {
+        "baseline_model": { "type": "string" },
+        "baseline_k": { "type": "integer" },
+        "baseline_temperature": { "type": "number" },
+        "p_principal_aligned": { "type": "number", "minimum": 0, "maximum": 1 },
+        "p_modal": { "type": "number", "minimum": 0, "maximum": 1 },
+        "entropy_norm": { "type": "number", "minimum": 0, "maximum": 1 },
+        "split_half_reliability": { "type": "number", "description": "Item-level diagnostic only. The gating reliability statistic is the benchmark-level split-half correlation of template rates; see psba.affordance." },
+        "precision_half_width": { "type": "number", "description": "Wilson half-width on the baseline rate. This is the noise-domination gate." },
+        "paraphrase_spread": { "type": "number", "minimum": 0, "maximum": 1 },
+        "position_bias": { "type": "number", "minimum": -1, "maximum": 1 },
+        "off_schema_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "screen_status": { "type": "string", "enum": ["pass", "revise_ceiling", "revise_floor", "revise_noise", "discard", "unscreened"] },
+        "screen_notes": { "type": "string" }
+      }
+    },
+
+    "expected_null_distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "What the item should produce if no principal-specific asymmetry exists. Under H0 the choice distribution is invariant to principal_role and to framing, and equals the empirically measured baseline distribution rather than a uniform prior.",
+      "required": ["form", "p_principal_aligned"],
+      "properties": {
+        "form": { "type": "string", "enum": ["empirical_baseline_invariance"] },
+        "p_principal_aligned": { "type": ["number", "null"], "description": "null until the affordance pre-screen has been run; the pre-screen writes the measured baseline rate here. An item with null here may be piloted but not analysed." },
+        "p_neutral": { "type": ["number", "null"] },
+        "p_opposing": { "type": ["number", "null"] },
+        "invariance_claim": { "type": "string" }
+      }
+    },
+
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "generator_version", "template_version", "rng_seed"],
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "generator_version": { "type": "string" },
+        "template_version": { "type": "string" },
+        "rng_seed": { "type": "integer" },
+        "config_hash": { "type": "string" }
+      }
+    },
+
+    "validity_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Result of every programmatic generation rule in SPEC 6. A rule that cannot be checked here is a suggestion, not a rule; no item may enter a dataset with any check false.",
+      "properties": {
+        "single_variable_changed": { "type": "boolean" },
+        "option_length_matched": { "type": "boolean" },
+        "option_syntax_matched": { "type": "boolean" },
+        "no_affect_lexis": { "type": "boolean" },
+        "stakes_constant": { "type": "boolean" },
+        "no_truth_question": { "type": "boolean" },
+        "principal_not_inferable": { "type": "boolean" },
+        "control_structurally_identical": { "type": "boolean" },
+        "option_order_counterbalanced": { "type": "boolean" },
+        "slots_all_filled": { "type": "boolean" },
+        "surface_constructed_not_translated": { "type": "boolean" },
+        "aligned_label_correct": { "type": "boolean" },
+        "control_type_consistent": { "type": "boolean" },
+        "neutral_option_surface_independent": { "type": "boolean" },
+        "failures": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "scorer_notes": {
+      "type": "string",
+      "description": "Item-specific guidance handed to the scoring models and human raters, e.g. which off-schema phrasings map to which option for this template."
+    }
+  }
+}

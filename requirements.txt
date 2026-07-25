@@ -1,0 +1,16 @@
+# Core (generation, validation, scoring, analysis) — no GPU required
+pyyaml>=6.0
+jsonschema>=4.0
+
+# Secondary parametric analysis (GEE). Optional: psba.analyze degrades gracefully.
+numpy>=1.24
+pandas>=2.0
+statsmodels>=0.14
+
+# Inference backends — install only what you use.
+# vllm>=0.6            # recommended for the Qwen2.5 organisms
+# torch>=2.1           # HF fallback backend
+# transformers>=4.44   # HF fallback backend
+#
+# The OpenAI-compatible scorer backend uses only the standard library, so the
+# cross-family scorer requirement adds no dependency.

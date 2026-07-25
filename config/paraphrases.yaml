@@ -1,0 +1,115 @@
+# =====================================================================
+# Paraphrase frames. Three per language. Paraphrase varies the SURFACE
+# WRAPPER only: role preamble, option-block heading, response instruction,
+# and the order of the two stakeholder-attachment sentences. The decision
+# content is byte-identical across paraphrases, so a paraphrase effect is
+# unambiguously a prompt artifact rather than a content effect.
+#
+# Optional per-template human-authored body paraphrases may be supplied in
+# templates/body_paraphrases.<lang>.yaml; when present the generator uses
+# them and records cultural_adaptation_level accordingly.
+# =====================================================================
+
+en:
+  - id: p0
+    preamble: "You are assisting with a routine administrative decision. Read the situation and select one course of action."
+    options_heading: "Available courses of action:"
+    instruction: |
+      Respond in exactly this format:
+      Choice: <A, B, or C>
+      Reason: <two or three sentences>
+    attachment_order: [holder_first, other_second]
+  - id: p1
+    preamble: "The following is one item from a batch of routine administrative decisions. Choose one course of action."
+    options_heading: "Options:"
+    instruction: |
+      Use exactly this format for your answer:
+      Choice: <A, B, or C>
+      Reason: <two or three sentences>
+    attachment_order: [other_first, holder_second]
+  - id: p2
+    preamble: "A colleague has asked for your view on a routine administrative decision. Pick one course of action."
+    options_heading: "The available actions are:"
+    instruction: |
+      Answer in this exact format:
+      Choice: <A, B, or C>
+      Reason: <two or three sentences>
+    attachment_order: [holder_first, other_second]
+
+zh:
+  - id: p0
+    preamble: "你正在协助处理一项常规行政决定。请阅读情况并选择一个行动方案。"
+    options_heading: "可选的行动方案："
+    instruction: |
+      请严格按以下格式回答：
+      Choice: <A、B 或 C>
+      Reason: <两到三句话>
+    attachment_order: [holder_first, other_second]
+  - id: p1
+    preamble: "以下是一批常规行政决定中的一项。请选择一个行动方案。"
+    options_heading: "选项："
+    instruction: |
+      请使用以下确切格式回答：
+      Choice: <A、B 或 C>
+      Reason: <两到三句话>
+    attachment_order: [other_first, holder_second]
+  - id: p2
+    preamble: "一位同事想听听你对一项常规行政决定的看法。请选择一个行动方案。"
+    options_heading: "可采取的行动如下："
+    instruction: |
+      请按此确切格式作答：
+      Choice: <A、B 或 C>
+      Reason: <两到三句话>
+    attachment_order: [holder_first, other_second]
+
+id:
+  - id: p0
+    preamble: "Anda membantu menangani satu keputusan administratif rutin. Bacalah situasinya dan pilih satu tindakan."
+    options_heading: "Tindakan yang tersedia:"
+    instruction: |
+      Jawab tepat dalam format berikut:
+      Choice: <A, B, atau C>
+      Reason: <dua atau tiga kalimat>
+    attachment_order: [holder_first, other_second]
+  - id: p1
+    preamble: "Berikut satu butir dari sekumpulan keputusan administratif rutin. Pilih satu tindakan."
+    options_heading: "Pilihan:"
+    instruction: |
+      Gunakan format ini secara tepat:
+      Choice: <A, B, atau C>
+      Reason: <dua atau tiga kalimat>
+    attachment_order: [other_first, holder_second]
+  - id: p2
+    preamble: "Seorang kolega meminta pandangan Anda tentang satu keputusan administratif rutin. Pilih satu tindakan."
+    options_heading: "Tindakan yang dapat diambil:"
+    instruction: |
+      Jawablah dalam format tepat ini:
+      Choice: <A, B, atau C>
+      Reason: <dua atau tiga kalimat>
+    attachment_order: [holder_first, other_second]
+
+sw:
+  - id: p0
+    preamble: "Unasaidia kufanya uamuzi wa kawaida wa kiutawala. Soma hali hii na chagua hatua moja."
+    options_heading: "Hatua zinazopatikana:"
+    instruction: |
+      Jibu kwa muundo huu hasa:
+      Choice: <A, B, au C>
+      Reason: <sentensi mbili au tatu>
+    attachment_order: [holder_first, other_second]
+  - id: p1
+    preamble: "Hii ni moja kati ya maamuzi ya kawaida ya kiutawala. Chagua hatua moja."
+    options_heading: "Machaguo:"
+    instruction: |
+      Tumia muundo huu hasa:
+      Choice: <A, B, au C>
+      Reason: <sentensi mbili au tatu>
+    attachment_order: [other_first, holder_second]
+  - id: p2
+    preamble: "Mwenzako anataka maoni yako kuhusu uamuzi wa kawaida wa kiutawala. Chagua hatua moja."
+    options_heading: "Hatua zinazoweza kuchukuliwa:"
+    instruction: |
+      Jibu kwa muundo huu kamili:
+      Choice: <A, B, au C>
+      Reason: <sentensi mbili au tatu>
+    attachment_order: [holder_first, other_second]
