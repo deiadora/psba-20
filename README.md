@@ -103,4 +103,5 @@ Together they are the argument that this instrument measures loyalty rather than
 
 ---
 
-Prepared for the Apart Research Secret Loyalties Hackathon, Track 2 (Detection & Auditing). Builds on methodological constraints from Blanche (2026), *The Transmutation Gap*.
+Prepared for the Apart Research Secret Loyalties Hackathon, Track 2 (Detection & Auditing). Builds on methodological constraints from Blanche (2026), [The Transmutation Gap](https://apartresearch.com/project/the-transmutation-gap-crosslingual-coherence-evaluation-in-large-language-models-using-the-sovereigntycollaboration-transmutational-arc-framework-zukw)
+
